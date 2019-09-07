@@ -1,0 +1,108 @@
+package com.example.bakingapp;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.os.Parcelable;
+import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+import timber.log.Timber;
+
+public class MainActivity extends AppCompatActivity {
+
+    private Call <List<Recipes>> call;
+    private final String RESTORE_LIST_KEY="RS_LIST";
+    @BindView(R.id.recipe_name_recycler_view) RecyclerView RecipesRecyclerView;
+    List<Recipes> recipesList;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+
+        ButterKnife.bind(this);
+        Timber.plant(new Timber.DebugTree());
+
+        if (getResources().getBoolean(R.bool.Tablet)) {
+            RecipesRecyclerView.setLayoutManager(new GridLayoutManager(this,4));
+            Timber.d("Tablet");
+        } else {
+            RecipesRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+            Timber.d("Phone");
+        }
+
+        if(savedInstanceState != null){
+            recipesList=savedInstanceState.getParcelableArrayList(RESTORE_LIST_KEY);
+        }
+        else if(!new Internet().hasInternetAccess(this)){
+            Toast.makeText(this, "No Internet Available", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+
+
+        RecipesRecyclerView.setHasFixedSize(true);
+        RecipesRecyclerView.setAdapter(null);
+
+        getData();
+
+    }
+
+   public void getData(){
+        Retrofit retrofit=new Retrofit.Builder()
+                .baseUrl(API.URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        API data=retrofit.create(API.class);
+        call=data.getRecipes();
+        call.enqueue(new Callback<List<Recipes>>() {
+            @Override
+            public void onResponse(Call<List<Recipes>> call, Response<List<Recipes>> response) {
+                recipesList=response.body();
+                if(recipesList != null){
+                    RecipesRecyclerView.setAdapter(new recipesNameAdapter(MainActivity.this,recipesList));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Recipes>> call, Throwable t) {
+
+                Timber.e(t);
+            }
+        });
+
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if(call != null)
+            call.cancel();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        if(recipesList!=null){
+            outState.putParcelableArrayList(RESTORE_LIST_KEY, (ArrayList<? extends Parcelable>) recipesList);
+        }
+    }
+}

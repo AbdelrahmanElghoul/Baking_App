@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Baking App</string>
+    <string name="Ingredient_KEY" translatable="false">Ingredients</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="media_unavailable">Media unavailable</string>
+    <string name="STEPS_INDEX_KEY" translatable="false">StepsIndex</string>
+</resources>
