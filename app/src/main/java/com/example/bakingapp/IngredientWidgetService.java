@@ -32,7 +32,7 @@ public class IngredientWidgetService extends RemoteViewsService {
         public void onCreate() {
             Gson gson = new Gson();
             SharedPreferences sharedPreferences = getSharedPreferences(getString(R.string.app_name_KEY), MODE_PRIVATE);
-            String json = sharedPreferences.getString(getString(R.string.Ingredient_KEY), null);
+            String json = sharedPreferences.getString(getString(R.string.Ingredient_KEY), "");
             if (!json.isEmpty()) {
                 Type type = new TypeToken<List<Recipes.IngredientsBean>>() {
                 }.getType();
@@ -46,7 +46,7 @@ public class IngredientWidgetService extends RemoteViewsService {
             Gson gson = new Gson();
             SharedPreferences sharedPreferences = getSharedPreferences(getString(R.string.app_name_KEY), MODE_PRIVATE);
             String json = sharedPreferences.getString(getString(R.string.Ingredient_KEY), null);
-            if (!json.isEmpty()) {
+            if (json!=null &&!json.isEmpty()) {
                 Type type = new TypeToken<List<Recipes.IngredientsBean>>() {
                 }.getType();
                 ingredientsBeans = gson.fromJson(json, type);
@@ -62,6 +62,8 @@ public class IngredientWidgetService extends RemoteViewsService {
 
         @Override
         public int getCount() {
+            if(ingredientsBeans==null)
+                return 0;
             return ingredientsBeans.size();
         }
 

@@ -47,6 +47,10 @@ public class recipesNameAdapter extends RecyclerView.Adapter<recipesNameAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull mViewHolder holder, int position) {
+        if (position==0) {
+            holder.setIsInTheMiddle(true);
+        }else{ holder.setIsInTheMiddle(false);}
+
         holder.recipesName.setText(recipes.get(position).getName());
         if(!recipes.get(position).getImage().isEmpty()){
             Picasso.get().load(recipes.get(position).getImage()).error(R.drawable.cake).into(holder.recipeImage);
@@ -66,6 +70,7 @@ public class recipesNameAdapter extends RecyclerView.Adapter<recipesNameAdapter.
             AppWidgetManager.getInstance(context).notifyAppWidgetViewDataChanged(WidgetIds,R.id.ingredient_list_widget);
             context.startActivity(i);
         });
+
     }
 
     @Override
@@ -74,6 +79,7 @@ public class recipesNameAdapter extends RecyclerView.Adapter<recipesNameAdapter.
     }
 
     class mViewHolder extends RecyclerView.ViewHolder{
+        private boolean mIsInTheMiddle = false;
 
         @BindView(R.id.txt_recipes) TextView recipesName;
         @BindView(R.id.recipe_img) ImageView recipeImage;
@@ -81,6 +87,14 @@ public class recipesNameAdapter extends RecyclerView.Adapter<recipesNameAdapter.
         public mViewHolder(@NonNull View itemView) {
             super(itemView);
             ButterKnife.bind(this,itemView);
+        }
+
+        boolean getIsInTheMiddle() {
+            return mIsInTheMiddle;
+        }
+
+        void setIsInTheMiddle(boolean isInTheMiddle) {
+            mIsInTheMiddle = isInTheMiddle;
         }
     }
 }

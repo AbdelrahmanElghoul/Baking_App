@@ -39,6 +39,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import timber.log.Timber;
 
 
 public class fragment_steps extends Fragment {
@@ -66,7 +67,11 @@ public class fragment_steps extends Fragment {
     public static int getIndex() {
         return index;
     }
-    private static int index;
+    private static int index=-1;
+
+    public static void setIndex(int index) {
+        fragment_steps.index = index;
+    }
 
     @Nullable
     @Override
@@ -170,7 +175,6 @@ public class fragment_steps extends Fragment {
         if(player!=null)
             player.stop();
         onDetach();
-
     }
 
     @Override
@@ -178,6 +182,5 @@ public class fragment_steps extends Fragment {
         super.onDetach();
         if(player!=null)
           player.release();
-
     }
 }

@@ -7,6 +7,7 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="media_unavailable">Media unavailable</string>
     <string name="Ingredient_List_KEY" translatable="false">IngredientWidget</string>
+    <string name="middle">testing</string>
     <string name="STEPS_INDEX_KEY" translatable="false">StepsIndex</string>
     <string name="appwidget_text">EXAMPLE</string>
     <string name="add_widget">Add widget</string>

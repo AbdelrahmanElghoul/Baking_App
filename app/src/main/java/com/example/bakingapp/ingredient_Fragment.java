@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import timber.log.Timber;
 
 public class ingredient_Fragment extends Fragment {
 
@@ -37,7 +36,7 @@ public class ingredient_Fragment extends Fragment {
 
         StepsRecyclerView.setHasFixedSize(true);
         StepsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        StepsRecyclerView.setAdapter(new IngreidientStepAdapter(getContext(),recipes));
+        StepsRecyclerView.setAdapter(new IngredientStepAdapter(getContext(),recipes));
 
     }
 

@@ -1,6 +1,5 @@
 package com.example.bakingapp;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.widget.Toast;
@@ -9,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.test.espresso.idling.CountingIdlingResource;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +24,7 @@ import timber.log.Timber;
 
 public class MainActivity extends AppCompatActivity {
 
+    CountingIdlingResource idlingResource=new CountingIdlingResource("Baking_App");
     private Call <List<Recipes>> call;
     private final String RESTORE_LIST_KEY="RS_LIST";
     @BindView(R.id.recipe_name_recycler_view) RecyclerView RecipesRecyclerView;
@@ -33,7 +34,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
 
         ButterKnife.bind(this);
         Timber.plant(new Timber.DebugTree());
@@ -45,22 +45,21 @@ public class MainActivity extends AppCompatActivity {
             RecipesRecyclerView.setLayoutManager(new LinearLayoutManager(this));
             Timber.d("Phone");
         }
-
+        RecipesRecyclerView.setHasFixedSize(true);
         if(savedInstanceState != null){
             recipesList=savedInstanceState.getParcelableArrayList(RESTORE_LIST_KEY);
+            RecipesRecyclerView.setAdapter(new recipesNameAdapter(this,recipesList));
+            Timber.d("List Restored");
         }
         else if(!new Internet().hasInternetAccess(this)){
             Toast.makeText(this, "No Internet Available", Toast.LENGTH_LONG).show();
+            Timber.e("No Internet");
             return;
+        }else{
+            idlingResource.increment();
+            getData();
+            RecipesRecyclerView.setAdapter(null);
         }
-
-
-
-        RecipesRecyclerView.setHasFixedSize(true);
-        RecipesRecyclerView.setAdapter(null);
-
-        getData();
-
     }
 
    public void getData(){
@@ -77,12 +76,13 @@ public class MainActivity extends AppCompatActivity {
                 recipesList=response.body();
                 if(recipesList != null){
                     RecipesRecyclerView.setAdapter(new recipesNameAdapter(MainActivity.this,recipesList));
+                    idlingResource.decrement();
                 }
             }
 
             @Override
             public void onFailure(Call<List<Recipes>> call, Throwable t) {
-
+                idlingResource.decrement();
                 Timber.e(t);
             }
         });
@@ -103,6 +103,9 @@ public class MainActivity extends AppCompatActivity {
 
         if(recipesList!=null){
             outState.putParcelableArrayList(RESTORE_LIST_KEY, (ArrayList<? extends Parcelable>) recipesList);
+            Timber.d("List Saved");
         }
     }
+
+
 }

@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class IngreidientStepAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class IngredientStepAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private static final int STEPS_TYPE=234;
     private static final int INGREDIENT_TYPE=456;
@@ -21,7 +21,7 @@ public class IngreidientStepAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     private Recipes recipes;
     private replace_fragments fragment_replace;
 
-    public IngreidientStepAdapter(Context context, Recipes recipes) {
+    public IngredientStepAdapter(Context context, Recipes recipes) {
         this.context = context;
         this.recipes = recipes;
         fragment_replace=(replace_fragments) context;
