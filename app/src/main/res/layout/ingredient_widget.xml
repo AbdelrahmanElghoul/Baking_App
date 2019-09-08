@@ -1,0 +1,19 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:background="#fff"
+    android:padding="@dimen/widget_margin">
+
+  <ListView
+      android:layout_width="match_parent"
+      android:id="@+id/ingredient_list_widget"
+      android:layout_height="wrap_content"/>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/cake"
+        android:id="@+id/default_widget_img" />
+
+</FrameLayout>

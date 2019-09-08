@@ -1,8 +1,11 @@
 package com.example.bakingapp;
 
 import android.app.IntentService;
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.view.LayoutInflater;
@@ -16,6 +19,7 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -48,15 +52,19 @@ public class recipesNameAdapter extends RecyclerView.Adapter<recipesNameAdapter.
             Picasso.get().load(recipes.get(position).getImage()).error(R.drawable.cake).into(holder.recipeImage);
         }
 
-        holder.recipeCard.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i=new Intent(context,IngredientActivity.class);
-                Bundle b=new Bundle();
-                b.putParcelable(context.getString(R.string.Ingredient_KEY),recipes.get(position));
-                i.putExtras(b);
-                context.startActivity(i);
-            }
+        holder.recipeCard.setOnClickListener(v -> {
+            Intent i=new Intent(context,IngredientActivity.class);
+            Bundle b=new Bundle();
+            b.putParcelable(context.getString(R.string.Ingredient_KEY),recipes.get(position));
+            i.putExtras(b);
+
+            SharedPreferences sharedPreferences=context.getSharedPreferences(context.getString(R.string.app_name_KEY),Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor=sharedPreferences.edit();
+            editor.putString( context.getString(R.string.Ingredient_KEY), new Gson().toJson( recipes.get(position).getIngredients()));
+            editor.apply();
+            int[] WidgetIds=AppWidgetManager.getInstance(context).getAppWidgetIds(new ComponentName(context,IngredientWidget.class));
+            AppWidgetManager.getInstance(context).notifyAppWidgetViewDataChanged(WidgetIds,R.id.ingredient_list_widget);
+            context.startActivity(i);
         });
     }
 
