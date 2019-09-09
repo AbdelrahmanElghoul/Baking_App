@@ -9,6 +9,7 @@ import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -38,6 +39,7 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 
 import butterknife.BindView;
+import butterknife.BindViews;
 import butterknife.ButterKnife;
 import timber.log.Timber;
 
@@ -61,6 +63,7 @@ public class fragment_steps extends Fragment {
     @BindView(R.id.btn_previous)
     ImageButton btn_previous;
 
+    private static long position=-1;
     private SimpleExoPlayer player;
     private List<Recipes.StepsBean> stepsList;
 
@@ -98,7 +101,7 @@ public class fragment_steps extends Fragment {
                 SetUI();
             });
         }
-        SetUI();
+
     }
 
     private void SetUI(){
@@ -124,15 +127,14 @@ public class fragment_steps extends Fragment {
 
     private void setMediaPlayer() {
         if (!stepsList.get(index).getVideoURL().isEmpty()) {
-            if (player == null) initialiseExoPlayer();
             setExoPlayer();
-        } else if (!stepsList.get(index).getThumbnailURL().isEmpty()) {
+        } else{
             playerView.setVisibility(View.GONE);
             IngredientImg.setVisibility(View.VISIBLE);
-            Picasso.get().load(stepsList.get(index).getThumbnailURL()).error(R.drawable.problem).into(IngredientImg);
-        } else {
-            playerView.setVisibility(View.GONE);
-            IngredientImg.setVisibility(View.VISIBLE);
+            position=-1;
+            if (!stepsList.get(index).getThumbnailURL().isEmpty()) {
+                Picasso.get().load(stepsList.get(index).getThumbnailURL()).error(R.drawable.problem).into(IngredientImg);
+            }
         }
     }
 
@@ -147,10 +149,14 @@ public class fragment_steps extends Fragment {
         MediaSource videoSource = new ExtractorMediaSource(mediaUri, dataSourceFactory, extractorsFactory, null, null, null);
         player.prepare(videoSource);
         playerView.requestFocus();
+        if(position!=-1)
+            player.seekTo(position);
         player.setPlayWhenReady(true);
     }
 
     private void initialiseExoPlayer() {
+        if(player != null)
+            return;
         BandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
         TrackSelection.Factory videoTrackSelectionFactory = new AdaptiveTrackSelection.Factory(bandwidthMeter);
         TrackSelector trackSelector = new DefaultTrackSelector(videoTrackSelectionFactory);
@@ -161,26 +167,51 @@ public class fragment_steps extends Fragment {
         playerView.setUseController(true);
         playerView.requestFocus();
         playerView.setPlayer(player);
+        Timber.d("initialised");
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (Util.SDK_INT > 23) {
+            initialiseExoPlayer();
+            Timber.d("initialise OnStart");
+        }
+        SetUI();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        if ((Util.SDK_INT <= 23 || player == null)) {
+            initialiseExoPlayer();
+            Timber.d("initialise OnResume");
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        playerView.onPause();
+        if (player != null && Util.SDK_INT <= 23) {
+            position=player.getCurrentPosition();
+            Timber.d(String.valueOf(position));
+            player.stop();
+            player.release();
+            Timber.d("Released onPause");
+        }
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        playerView.onPause();
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        if(player!=null)
+        if (player != null && Util.SDK_INT > 23){
+            position=player.getCurrentPosition();
+            Timber.d(String.valueOf(position));
             player.stop();
-        onDetach();
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        if(player!=null)
-          player.release();
+            player.release();
+            Timber.d("Released onStop");
+        }
     }
 }
