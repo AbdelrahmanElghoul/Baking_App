@@ -2,8 +2,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal"
-    android:background="#fff"
-    android:padding="@dimen/widget_margin">
+    android:background="@color/background_color"
+    android:padding="@dimen/low_margin_padding">
 
   <ListView
       android:layout_width="match_parent"

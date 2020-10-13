@@ -4,7 +4,7 @@
     <string name="app_name_KEY" translatable="false">Baking App</string>
     <string name="Ingredient_KEY" translatable="false">Ingredients</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
+
     <string name="media_unavailable">Media unavailable</string>
     <string name="Ingredient_List_KEY" translatable="false">IngredientWidget</string>
     <string name="middle">testing</string>

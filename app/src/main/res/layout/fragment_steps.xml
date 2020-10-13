@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:background="@color/background_color"
     android:layout_height="match_parent"
     tools:context=".fragment_steps">
 
@@ -41,8 +42,9 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:gravity="top"
-        android:padding="10dp"
-        android:textSize="18sp"
+
+        android:padding="@dimen/average_margin_padding"
+        android:textSize="@dimen/normal_text_size"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@id/barrier"
         app:layout_constraintStart_toStartOf="parent"
@@ -64,6 +66,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         android:id="@+id/btn_next"
+        android:layout_margin="@dimen/average_margin_padding"
         app:layout_constraintEnd_toEndOf="parent"
         android:src="@drawable/next"/>
     <ImageButton
@@ -73,6 +76,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         android:id="@+id/btn_previous"
         android:rotation="180"
+        android:layout_margin="@dimen/average_margin_padding"
         app:layout_constraintStart_toStartOf="parent"
         android:src="@drawable/next"/>
 

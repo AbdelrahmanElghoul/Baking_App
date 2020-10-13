@@ -1,5 +1,6 @@
 package com.example.bakingapp;
 
+import android.annotation.SuppressLint;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -104,6 +105,7 @@ public class fragment_steps extends Fragment {
 
     }
 
+    @SuppressLint("NewApi")
     private void SetUI(){
        if(btn_next!=null ){
            getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -125,6 +127,7 @@ public class fragment_steps extends Fragment {
         setMediaPlayer();
     }
 
+    @SuppressLint("NewApi")
     private void setMediaPlayer() {
         if (!stepsList.get(index).getVideoURL().isEmpty()) {
             setExoPlayer();
