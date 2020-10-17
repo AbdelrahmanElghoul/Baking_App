@@ -9,7 +9,7 @@
     </style>
 
     <style name="text">
-        <item name="android:textSize">@dimen/text_size</item>
+        <item name="android:textSize">@dimen/normal_text_size</item>
         <item name="android:textColor">@color/text_color</item>
     </style>
 </resources>
